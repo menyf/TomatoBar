@@ -4,6 +4,7 @@ import SwiftUI
 
 class TBTimer: ObservableObject {
     @AppStorage("stopAfterBreak") var stopAfterBreak = false
+    @AppStorage("autoStartBreak") var autoStartBreak = true
     @AppStorage("showTimerInMenuBar") var showTimerInMenuBar = true
     @AppStorage("workIntervalLength") var workIntervalLength = 25
     @AppStorage("shortRestIntervalLength") var shortRestIntervalLength = 5
@@ -20,6 +21,7 @@ class TBTimer: ObservableObject {
     private var timerFormatter = DateComponentsFormatter()
     @Published var timeLeftString: String = ""
     @Published var timer: DispatchSourceTimer?
+    @Published var pendingBreak: Bool = false
 
     init() {
         /*
@@ -46,7 +48,12 @@ class TBTimer: ObservableObject {
         stateMachine.addRoutes(event: .startStop, transitions: [
             .idle => .work, .work => .idle, .rest => .idle,
         ])
-        stateMachine.addRoutes(event: .timerFired, transitions: [.work => .rest])
+        stateMachine.addRoutes(event: .timerFired, transitions: [.work => .rest]) { _ in
+            self.autoStartBreak
+        }
+        stateMachine.addRoutes(event: .timerFired, transitions: [.work => .idle]) { _ in
+            !self.autoStartBreak
+        }
         stateMachine.addRoutes(event: .timerFired, transitions: [.rest => .idle]) { _ in
             self.stopAfterBreak
         }
@@ -54,6 +61,7 @@ class TBTimer: ObservableObject {
             !self.stopAfterBreak
         }
         stateMachine.addRoutes(event: .skipRest, transitions: [.rest => .work])
+        stateMachine.addRoutes(event: .startBreak, transitions: [.idle => .rest])
 
         /*
          * "Finish" handlers are called when time interval ended
@@ -61,6 +69,7 @@ class TBTimer: ObservableObject {
          */
         stateMachine.addAnyHandler(.any => .work, handler: onWorkStart)
         stateMachine.addAnyHandler(.work => .rest, order: 0, handler: onWorkFinish)
+        stateMachine.addAnyHandler(.work => .idle, order: 0, handler: onWorkFinishToIdle)
         stateMachine.addAnyHandler(.work => .any, order: 1, handler: onWorkEnd)
         stateMachine.addAnyHandler(.any => .rest, handler: onRestStart)
         stateMachine.addAnyHandler(.rest => .work, handler: onRestFinish)
@@ -117,6 +126,10 @@ class TBTimer: ObservableObject {
 
     func skipRest() {
         stateMachine <-! .skipRest
+    }
+
+    func startBreak() {
+        stateMachine <-! .startBreak
     }
 
     func updateTimeLeft() {
@@ -176,6 +189,7 @@ class TBTimer: ObservableObject {
     }
 
     private func onWorkStart(context _: TBStateMachine.Context) {
+        pendingBreak = false
         TBStatusItem.shared.setIcon(name: .work)
         player.playWindup()
         player.startTicking()
@@ -187,11 +201,20 @@ class TBTimer: ObservableObject {
         player.playDing()
     }
 
+    private func onWorkFinishToIdle(context ctx: TBStateMachine.Context) {
+        if ctx.event == .timerFired {
+            consecutiveWorkIntervals += 1
+            pendingBreak = true
+            player.playDing()
+        }
+    }
+
     private func onWorkEnd(context _: TBStateMachine.Context) {
         player.stopTicking()
     }
 
     private func onRestStart(context _: TBStateMachine.Context) {
+        pendingBreak = false
         var body = NSLocalizedString("TBTimer.onRestStart.short.body", comment: "Short break body")
         var length = shortRestIntervalLength
         var imgName = NSImage.Name.shortRest
@@ -224,6 +247,8 @@ class TBTimer: ObservableObject {
     private func onIdleStart(context _: TBStateMachine.Context) {
         stopTimer()
         TBStatusItem.shared.setIcon(name: .idle)
-        consecutiveWorkIntervals = 0
+        if !pendingBreak {
+            consecutiveWorkIntervals = 0
+        }
     }
 }

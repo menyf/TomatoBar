@@ -48,6 +48,11 @@ private struct IntervalsView: View {
             }
             .help(NSLocalizedString("IntervalsView.workIntervalsInSet.help",
                                     comment: "Work intervals in set hint"))
+            Toggle(isOn: $timer.autoStartBreak) {
+                Text(NSLocalizedString("IntervalsView.autoStartBreak.label",
+                                       comment: "Auto start break label"))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }.toggleStyle(.switch)
             Spacer().frame(minHeight: 0)
         }
         .padding(4)
@@ -136,6 +141,7 @@ struct TBPopoverView: View {
 
     private var startLabel = NSLocalizedString("TBPopoverView.start.label", comment: "Start label")
     private var stopLabel = NSLocalizedString("TBPopoverView.stop.label", comment: "Stop label")
+    private var startBreakLabel = NSLocalizedString("TBPopoverView.startBreak.label", comment: "Start break label")
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -160,6 +166,19 @@ struct TBPopoverView: View {
             }
             .controlSize(.large)
             .keyboardShortcut(.defaultAction)
+
+            if timer.pendingBreak {
+                Button {
+                    timer.startBreak()
+                    TBStatusItem.shared.closePopover(nil)
+                } label: {
+                    Text(startBreakLabel)
+                        .foregroundColor(Color.white)
+                        .frame(maxWidth: .infinity)
+                }
+                .controlSize(.large)
+                .keyboardShortcut(.defaultAction)
+            }
 
             Picker("", selection: $activeChildView) {
                 Text(NSLocalizedString("TBPopoverView.intervals.label",
