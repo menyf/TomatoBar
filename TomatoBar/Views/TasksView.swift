@@ -12,7 +12,7 @@ struct TaskRowView: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(alignment: .top, spacing: 8) {
             toggleButton
             titleText
             deleteButton
@@ -41,7 +41,7 @@ struct TaskRowView: View {
             .strikethrough(task.isCompleted)
             .foregroundColor(task.isCompleted ? .secondary : .primary)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .lineLimit(1)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var deleteButton: some View {
