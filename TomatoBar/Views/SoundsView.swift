@@ -33,7 +33,6 @@ struct SoundsView: View {
             windupVolumeRow
             dingVolumeRow
             tickingVolumeRow
-            Spacer().frame(minHeight: 0)
         }
         .padding(4)
     }

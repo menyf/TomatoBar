@@ -56,19 +56,13 @@ struct TBPopoverView: View {
             TBStatusItem.shared.closePopover(nil)
         } label: {
             Text(timerButtonTitle)
-                // When appearance is set to "Dark" and accent color is set to "Graphite"
-                // "defaultAction" button label's color is set to the same color as the
-                // button, making the button look blank. #24
-                .foregroundColor(Color.white)
                 .font(.system(.body).monospacedDigit())
-                .background(Color.red)
                 .frame(maxWidth: .infinity)
         }
         .onHover { over in
             buttonHovered = over
         }
-        .controlSize(.large)
-        .keyboardShortcut(.defaultAction)
+        .buttonStyle(PrimaryButtonStyle())
     }
 
     private var timerButtonTitle: String {
@@ -84,11 +78,9 @@ struct TBPopoverView: View {
             TBStatusItem.shared.closePopover(nil)
         } label: {
             Text(startBreakLabel)
-                .foregroundColor(Color.white)
                 .frame(maxWidth: .infinity)
         }
-        .controlSize(.large)
-        .keyboardShortcut(.defaultAction)
+        .buttonStyle(PrimaryButtonStyle())
     }
 
     // MARK: - Tab Navigation
@@ -124,6 +116,7 @@ struct TBPopoverView: View {
                 TasksView().environmentObject(taskManager)
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     // MARK: - Footer
@@ -148,6 +141,36 @@ struct TBPopoverView: View {
                 NSApplication.shared.terminate(nil)
             }
             .keyboardShortcut("q")
+        }
+    }
+}
+
+// MARK: - PrimaryButtonStyle
+
+private struct PrimaryButtonStyle: ButtonStyle {
+    @State private var isHovered = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(.white)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(
+                Capsule()
+                    .fill(backgroundColor(isPressed: configuration.isPressed))
+            )
+            .onHover { hovering in
+                isHovered = hovering
+            }
+    }
+
+    private func backgroundColor(isPressed: Bool) -> Color {
+        if isPressed {
+            return Color.red.opacity(0.7)
+        } else if isHovered {
+            return Color.red.opacity(0.85)
+        } else {
+            return Color.red
         }
     }
 }

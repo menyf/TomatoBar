@@ -20,7 +20,6 @@ struct IntervalsView: View {
             longRestStepper
             workIntervalsInSetStepper
             autoStartBreakToggle
-            Spacer().frame(minHeight: 0)
         }
         .padding(4)
     }

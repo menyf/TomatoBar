@@ -22,7 +22,6 @@ struct SettingsView: View {
             stopAfterBreakToggle
             showTimerToggle
             launchAtLoginToggle
-            Spacer().frame(minHeight: 0)
         }
         .padding(4)
     }

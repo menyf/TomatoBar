@@ -67,7 +67,6 @@ struct TasksView: View {
         VStack(spacing: 6) {
             addTaskRow
             taskListContent
-            Spacer().frame(minHeight: 0)
         }
         .padding(4)
     }
