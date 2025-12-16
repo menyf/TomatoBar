@@ -37,11 +37,58 @@ struct TaskRowView: View {
     }
 
     private var titleText: some View {
-        Text(task.title)
+        Text(attributedTitle)
             .strikethrough(task.isCompleted)
-            .foregroundColor(task.isCompleted ? .secondary : .primary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var attributedTitle: AttributedString {
+        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let range = NSRange(task.title.startIndex..., in: task.title)
+        let matches = detector?.matches(in: task.title, options: [], range: range) ?? []
+
+        // If no URLs, return plain text
+        if matches.isEmpty {
+            var result = AttributedString(task.title)
+            result.foregroundColor = task.isCompleted ? .secondary : .primary
+            return result
+        }
+
+        // Build attributed string, replacing URLs with [url]
+        var result = AttributedString()
+        var currentIndex = task.title.startIndex
+
+        for match in matches {
+            guard let url = match.url,
+                  let matchRange = Range(match.range, in: task.title) else { continue }
+
+            // Add text before the URL
+            if currentIndex < matchRange.lowerBound {
+                var textPart = AttributedString(String(task.title[currentIndex..<matchRange.lowerBound]))
+                textPart.foregroundColor = task.isCompleted ? .secondary : .primary
+                result += textPart
+            }
+
+            // Add clickable [url] link
+            var linkPart = AttributedString("url")
+            linkPart.link = url
+            linkPart.foregroundColor = .blue
+            result += AttributedString("[")
+            result += linkPart
+            result += AttributedString("]")
+
+            currentIndex = matchRange.upperBound
+        }
+
+        // Add remaining text after last URL
+        if currentIndex < task.title.endIndex {
+            var textPart = AttributedString(String(task.title[currentIndex...]))
+            textPart.foregroundColor = task.isCompleted ? .secondary : .primary
+            result += textPart
+        }
+
+        return result
     }
 
     private var deleteButton: some View {
