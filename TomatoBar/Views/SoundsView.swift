@@ -26,30 +26,47 @@ struct VolumeSlider: View {
 struct SoundsView: View {
     @EnvironmentObject var player: TBPlayer
 
-    // MARK: - Properties
-
-    private let columns = [
-        GridItem(.flexible()),
-        GridItem(.fixed(110))
-    ]
-
     // MARK: - Body
 
     var body: some View {
-        LazyVGrid(columns: columns, alignment: .leading, spacing: 4) {
-            Text(NSLocalizedString("SoundsView.isWindupEnabled.label",
-                                   comment: "Windup label"))
-            VolumeSlider(volume: $player.windupVolume)
-
-            Text(NSLocalizedString("SoundsView.isDingEnabled.label",
-                                   comment: "Ding label"))
-            VolumeSlider(volume: $player.dingVolume)
-
-            Text(NSLocalizedString("SoundsView.isTickingEnabled.label",
-                                   comment: "Ticking label"))
-            VolumeSlider(volume: $player.tickingVolume)
+        VStack {
+            windupVolumeRow
+            dingVolumeRow
+            tickingVolumeRow
+            Spacer().frame(minHeight: 0)
         }
         .padding(4)
-        Spacer().frame(minHeight: 0)
+    }
+
+    // MARK: - Subviews
+
+    private var windupVolumeRow: some View {
+        HStack {
+            Text(NSLocalizedString("SoundsView.isWindupEnabled.label",
+                                   comment: "Windup label"))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            VolumeSlider(volume: $player.windupVolume)
+                .frame(width: 110)
+        }
+    }
+
+    private var dingVolumeRow: some View {
+        HStack {
+            Text(NSLocalizedString("SoundsView.isDingEnabled.label",
+                                   comment: "Ding label"))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            VolumeSlider(volume: $player.dingVolume)
+                .frame(width: 110)
+        }
+    }
+
+    private var tickingVolumeRow: some View {
+        HStack {
+            Text(NSLocalizedString("SoundsView.isTickingEnabled.label",
+                                   comment: "Ticking label"))
+                .frame(maxWidth: .infinity, alignment: .leading)
+            VolumeSlider(volume: $player.tickingVolume)
+                .frame(width: 110)
+        }
     }
 }
