@@ -28,9 +28,11 @@ struct TBPopoverView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            timerButton
-            if timer.pendingBreak {
-                startBreakButton
+            HStack(spacing: 8) {
+                timerButton
+                if timer.pendingBreak {
+                    startBreakButton
+                }
             }
             tabPicker
             contentGroupBox
@@ -59,6 +61,7 @@ struct TBPopoverView: View {
                 // button, making the button look blank. #24
                 .foregroundColor(Color.white)
                 .font(.system(.body).monospacedDigit())
+                .background(Color.red)
                 .frame(maxWidth: .infinity)
         }
         .onHover { over in
@@ -133,10 +136,8 @@ struct TBPopoverView: View {
             } label: {
                 Text(NSLocalizedString("TBPopoverView.about.label", comment: "About label"))
                 Spacer()
-                Text("\u{2318} A").foregroundColor(Color.gray)
             }
             .buttonStyle(.plain)
-            .keyboardShortcut("a")
 
             Button {
                 NSApplication.shared.terminate(self)
