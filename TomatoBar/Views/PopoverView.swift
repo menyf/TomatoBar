@@ -129,25 +129,59 @@ struct TBPopoverView: View {
     // MARK: - Footer
 
     private var footerButtons: some View {
-        Group {
-            Button {
+        VStack(spacing: 0) {
+            Divider()
+                .padding(.bottom, 8)
+
+            MenuButton(
+                title: NSLocalizedString("TBPopoverView.about.label", comment: "About label"),
+                shortcut: nil
+            ) {
                 NSApp.activate(ignoringOtherApps: true)
                 NSApp.orderFrontStandardAboutPanel()
-            } label: {
-                Text(NSLocalizedString("TBPopoverView.about.label", comment: "About label"))
-                Spacer()
             }
-            .buttonStyle(.plain)
 
-            Button {
-                NSApplication.shared.terminate(self)
-            } label: {
-                Text(NSLocalizedString("TBPopoverView.quit.label", comment: "Quit label"))
-                Spacer()
-                Text("\u{2318} Q").foregroundColor(Color.gray)
+            MenuButton(
+                title: NSLocalizedString("TBPopoverView.quit.label", comment: "Quit label"),
+                shortcut: "Q"
+            ) {
+                NSApplication.shared.terminate(nil)
             }
-            .buttonStyle(.plain)
             .keyboardShortcut("q")
+        }
+    }
+}
+
+// MARK: - MenuButton
+
+private struct MenuButton: View {
+    let title: String
+    let shortcut: String?
+    let action: () -> Void
+
+    @State private var isHovered = false
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                Spacer()
+                if let shortcut = shortcut {
+                    Text("\u{2318}\(shortcut)")
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(isHovered ? Color.primary.opacity(0.1) : Color.clear)
+            )
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            isHovered = hovering
         }
     }
 }
