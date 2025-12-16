@@ -1,36 +1,22 @@
-import SwiftUI
-import LaunchAtLogin
+// MARK: - StatusItem.swift
+// Menu bar status item controller.
+// Manages the popover display, icon updates, and menu bar title.
 
-extension NSImage.Name {
-    static let idle = Self("BarIconIdle")
-    static let work = Self("BarIconWork")
-    static let shortRest = Self("BarIconShortRest")
-    static let longRest = Self("BarIconLongRest")
-}
+import SwiftUI
+
+// MARK: - Constants
 
 private let digitFont = NSFont.monospacedDigitSystemFont(ofSize: 0, weight: .regular)
+private let popoverWidth: CGFloat = 240
 
-@main
-struct TBApp: App {
-    @NSApplicationDelegateAdaptor(TBStatusItem.self) var appDelegate
-
-    init() {
-        TBStatusItem.shared = appDelegate
-        LaunchAtLogin.migrateIfNeeded()
-        logger.append(event: TBLogEventAppStart())
-    }
-
-    var body: some Scene {
-        Settings {
-            EmptyView()
-        }
-    }
-}
+// MARK: - TBStatusItem
 
 class TBStatusItem: NSObject, NSApplicationDelegate {
     private var popover = NSPopover()
     private var statusBarItem: NSStatusItem?
     static var shared: TBStatusItem!
+
+    // MARK: - NSApplicationDelegate
 
     func applicationDidFinishLaunching(_: Notification) {
         let view = TBPopoverView()
@@ -38,18 +24,19 @@ class TBStatusItem: NSObject, NSApplicationDelegate {
         popover.behavior = .transient
         popover.contentViewController = NSViewController()
         popover.contentViewController?.view = NSHostingView(rootView: view)
+
         if let contentViewController = popover.contentViewController {
             popover.contentSize.height = contentViewController.view.intrinsicContentSize.height
-            popover.contentSize.width = 240
+            popover.contentSize.width = popoverWidth
         }
 
-        statusBarItem = NSStatusBar.system.statusItem(
-            withLength: NSStatusItem.variableLength
-        )
+        statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusBarItem?.button?.imagePosition = .imageLeft
         setIcon(name: .idle)
         statusBarItem?.button?.action = #selector(TBStatusItem.togglePopover(_:))
     }
+
+    // MARK: - Public Methods
 
     func setTitle(title: String?) {
         let paragraphStyle = NSMutableParagraphStyle()
@@ -71,10 +58,9 @@ class TBStatusItem: NSObject, NSApplicationDelegate {
     }
 
     func showPopover(_: AnyObject?) {
-        if let button = statusBarItem?.button {
-            popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
-            popover.contentViewController?.view.window?.makeKey()
-        }
+        guard let button = statusBarItem?.button else { return }
+        popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
+        popover.contentViewController?.view.window?.makeKey()
     }
 
     func closePopover(_ sender: AnyObject?) {

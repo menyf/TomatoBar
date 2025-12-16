@@ -7,35 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A21B78C27EE31A20009E5DB /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A21B78B27EE31A20009E5DB /* App.swift */; };
-		8A21B78E27EE31A20009E5DB /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A21B78D27EE31A20009E5DB /* View.swift */; };
 		8A21B79027EE31A30009E5DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A21B78F27EE31A30009E5DB /* Assets.xcassets */; };
 		8A7403A027FA19BB00E7F90B /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 8A74039F27FA19BB00E7F90B /* LaunchAtLogin */; };
 		8A8CFE402821D8C300F9F303 /* SwiftState in Frameworks */ = {isa = PBXBuildFile; productRef = 8A8CFE3F2821D8C300F9F303 /* SwiftState */; };
-		8A9F700927EE396E0012A1EC /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9F700827EE396E0012A1EC /* State.swift */; };
-		8A9F701927EE3DAF0012A1EC /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9F701827EE3DAF0012A1EC /* Timer.swift */; };
-		8A9F701F27EE536D0012A1EC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9F701E27EE536D0012A1EC /* Player.swift */; };
 		8AA5434A2930F008002A47FC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8AA54347293094AB002A47FC /* Localizable.strings */; };
 		8AA5B3EB281295DB00BE1A6C /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 8AA5B3EA281295DB00BE1A6C /* KeyboardShortcuts */; };
-		8AA5B3F22812A74600BE1A6C /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA5B3F12812A74600BE1A6C /* Notifications.swift */; };
-		8AEE49AF2AA75A5E00243D2F /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AEE49AE2AA75A5E00243D2F /* Log.swift */; };
-		8B1C2D3E2D10A00000TASK01 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B1C2D3D2D10A00000TASK01 /* Task.swift */; };
+		CF1000010000000000000001 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1000020000000000000001 /* App.swift */; };
+		CF1000030000000000000001 /* StatusItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF1000040000000000000001 /* StatusItem.swift */; };
+		CF2000010000000000000001 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2000020000000000000001 /* State.swift */; };
+		CF2000030000000000000001 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2000040000000000000001 /* Timer.swift */; };
+		CF2000050000000000000001 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2000060000000000000001 /* Task.swift */; };
+		CF3000010000000000000001 /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3000020000000000000001 /* PopoverView.swift */; };
+		CF3000030000000000000001 /* IntervalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3000040000000000000001 /* IntervalsView.swift */; };
+		CF3000050000000000000001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3000060000000000000001 /* SettingsView.swift */; };
+		CF3000070000000000000001 /* SoundsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3000080000000000000001 /* SoundsView.swift */; };
+		CF3000090000000000000001 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF30000A0000000000000001 /* TasksView.swift */; };
+		CF4000010000000000000001 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4000020000000000000001 /* Logger.swift */; };
+		CF4000030000000000000001 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4000040000000000000001 /* Player.swift */; };
+		CF4000050000000000000001 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4000060000000000000001 /* Notifications.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8A21B78827EE31A20009E5DB /* TomatoBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TomatoBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A21B78B27EE31A20009E5DB /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
-		8A21B78D27EE31A20009E5DB /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		8A21B78F27EE31A30009E5DB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8A21B79427EE31A30009E5DB /* TomatoBar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TomatoBar.entitlements; sourceTree = "<group>"; };
-		8A9F700827EE396E0012A1EC /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
-		8A9F701827EE3DAF0012A1EC /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
-		8A9F701E27EE536D0012A1EC /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		8AA54346293094AB002A47FC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		8AA5B3F12812A74600BE1A6C /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		8AEE49AE2AA75A5E00243D2F /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
-		8B1C2D3D2D10A00000TASK01 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		C4C8DE0E2930DBB4003B1110 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		CF1000020000000000000001 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		CF1000040000000000000001 /* StatusItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusItem.swift; sourceTree = "<group>"; };
+		CF2000020000000000000001 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
+		CF2000040000000000000001 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		CF2000060000000000000001 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		CF3000020000000000000001 /* PopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverView.swift; sourceTree = "<group>"; };
+		CF3000040000000000000001 /* IntervalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalsView.swift; sourceTree = "<group>"; };
+		CF3000060000000000000001 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		CF3000080000000000000001 /* SoundsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundsView.swift; sourceTree = "<group>"; };
+		CF30000A0000000000000001 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
+		CF4000020000000000000001 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		CF4000040000000000000001 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		CF4000060000000000000001 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,14 +82,10 @@
 		8A21B78A27EE31A20009E5DB /* TomatoBar */ = {
 			isa = PBXGroup;
 			children = (
-				8A21B78B27EE31A20009E5DB /* App.swift */,
-				8AEE49AE2AA75A5E00243D2F /* Log.swift */,
-				8A21B78D27EE31A20009E5DB /* View.swift */,
-				8A9F700827EE396E0012A1EC /* State.swift */,
-				8A9F701827EE3DAF0012A1EC /* Timer.swift */,
-				8B1C2D3D2D10A00000TASK01 /* Task.swift */,
-				8A9F701E27EE536D0012A1EC /* Player.swift */,
-				8AA5B3F12812A74600BE1A6C /* Notifications.swift */,
+				CF1000000000000000000001 /* App */,
+				CF2000000000000000000001 /* Core */,
+				CF3000000000000000000001 /* Views */,
+				CF4000000000000000000001 /* Services */,
 				8A21B78F27EE31A30009E5DB /* Assets.xcassets */,
 				8A21B79427EE31A30009E5DB /* TomatoBar.entitlements */,
 				8AA54347293094AB002A47FC /* Localizable.strings */,
@@ -94,6 +100,47 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		CF1000000000000000000001 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				CF1000020000000000000001 /* App.swift */,
+				CF1000040000000000000001 /* StatusItem.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		CF2000000000000000000001 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				CF2000020000000000000001 /* State.swift */,
+				CF2000040000000000000001 /* Timer.swift */,
+				CF2000060000000000000001 /* Task.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		CF3000000000000000000001 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				CF3000020000000000000001 /* PopoverView.swift */,
+				CF3000040000000000000001 /* IntervalsView.swift */,
+				CF3000060000000000000001 /* SettingsView.swift */,
+				CF3000080000000000000001 /* SoundsView.swift */,
+				CF30000A0000000000000001 /* TasksView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		CF4000000000000000000001 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				CF4000020000000000000001 /* Logger.swift */,
+				CF4000040000000000000001 /* Player.swift */,
+				CF4000060000000000000001 /* Notifications.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -104,7 +151,7 @@
 				8A21B78427EE31A20009E5DB /* Sources */,
 				8A21B78527EE31A20009E5DB /* Frameworks */,
 				8A21B78627EE31A20009E5DB /* Resources */,
-				8A7403A127FA1A4E00E7F90B /* Copy “Launch at Login Helper” */,
+				8A7403A127FA1A4E00E7F90B /* Copy "Launch at Login Helper" */,
 			);
 			buildRules = (
 			);
@@ -172,7 +219,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		8A7403A127FA1A4E00E7F90B /* Copy “Launch at Login Helper” */ = {
+		8A7403A127FA1A4E00E7F90B /* Copy "Launch at Login Helper" */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -182,7 +229,7 @@
 			);
 			inputPaths = (
 			);
-			name = "Copy “Launch at Login Helper”";
+			name = "Copy \"Launch at Login Helper\"";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -198,14 +245,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A9F701F27EE536D0012A1EC /* Player.swift in Sources */,
-				8AEE49AF2AA75A5E00243D2F /* Log.swift in Sources */,
-				8A21B78E27EE31A20009E5DB /* View.swift in Sources */,
-				8A9F701927EE3DAF0012A1EC /* Timer.swift in Sources */,
-				8B1C2D3E2D10A00000TASK01 /* Task.swift in Sources */,
-				8A21B78C27EE31A20009E5DB /* App.swift in Sources */,
-				8AA5B3F22812A74600BE1A6C /* Notifications.swift in Sources */,
-				8A9F700927EE396E0012A1EC /* State.swift in Sources */,
+				CF1000010000000000000001 /* App.swift in Sources */,
+				CF1000030000000000000001 /* StatusItem.swift in Sources */,
+				CF2000010000000000000001 /* State.swift in Sources */,
+				CF2000030000000000000001 /* Timer.swift in Sources */,
+				CF2000050000000000000001 /* Task.swift in Sources */,
+				CF3000010000000000000001 /* PopoverView.swift in Sources */,
+				CF3000030000000000000001 /* IntervalsView.swift in Sources */,
+				CF3000050000000000000001 /* SettingsView.swift in Sources */,
+				CF3000070000000000000001 /* SoundsView.swift in Sources */,
+				CF3000090000000000000001 /* TasksView.swift in Sources */,
+				CF4000010000000000000001 /* Logger.swift in Sources */,
+				CF4000030000000000000001 /* Player.swift in Sources */,
+				CF4000050000000000000001 /* Notifications.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

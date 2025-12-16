@@ -1,5 +1,12 @@
+// MARK: - Task.swift
+// Task model and persistence manager for tracking work items.
+// Tasks are stored in UserDefaults as JSON.
+
 import SwiftUI
 
+// MARK: - TBTask
+
+/// A single task item that can be tracked during pomodoro sessions.
 struct TBTask: Identifiable, Codable {
     let id: UUID
     var title: String
@@ -12,18 +19,26 @@ struct TBTask: Identifiable, Codable {
     }
 }
 
-class TBTaskManager: ObservableObject {
+// MARK: - TBTaskManager
+
+/// Manages the list of tasks with persistence to UserDefaults.
+final class TBTaskManager: ObservableObject {
+
+    // MARK: - Properties
+
     @Published var tasks: [TBTask] = [] {
-        didSet {
-            saveTasks()
-        }
+        didSet { saveTasks() }
     }
 
     private let tasksKey = "tasks"
 
+    // MARK: - Initialization
+
     init() {
         loadTasks()
     }
+
+    // MARK: - Persistence
 
     private func loadTasks() {
         guard let data = UserDefaults.standard.data(forKey: tasksKey),
@@ -34,11 +49,11 @@ class TBTaskManager: ObservableObject {
     }
 
     private func saveTasks() {
-        guard let encoded = try? JSONEncoder().encode(tasks) else {
-            return
-        }
+        guard let encoded = try? JSONEncoder().encode(tasks) else { return }
         UserDefaults.standard.set(encoded, forKey: tasksKey)
     }
+
+    // MARK: - Task Operations
 
     func addTask(_ title: String) {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -55,8 +70,7 @@ class TBTaskManager: ObservableObject {
     }
 
     func toggleTask(_ task: TBTask) {
-        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[index].isCompleted.toggle()
-        }
+        guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
+        tasks[index].isCompleted.toggle()
     }
 }

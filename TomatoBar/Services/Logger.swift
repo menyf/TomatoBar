@@ -1,19 +1,26 @@
+// MARK: - Logger.swift
+// JSON event logger for tracking app usage and state transitions.
+// Logs are written to ~/Library/Caches/TomatoBar.log
+
 import Foundation
-import SwiftUI
+
+// MARK: - Log Event Protocol
 
 protocol TBLogEvent: Encodable {
     var type: String { get }
     var timestamp: Date { get }
 }
 
-class TBLogEventAppStart: TBLogEvent {
-    internal let type = "appstart"
-    internal let timestamp: Date = Date()
+// MARK: - Log Events
+
+final class TBLogEventAppStart: TBLogEvent {
+    let type = "appstart"
+    let timestamp = Date()
 }
 
-class TBLogEventTransition: TBLogEvent {
-    internal let type = "transition"
-    internal let timestamp: Date = Date()
+final class TBLogEventTransition: TBLogEvent {
+    let type = "transition"
+    let timestamp = Date()
 
     private let event: String
     private let fromState: String
@@ -26,16 +33,25 @@ class TBLogEventTransition: TBLogEvent {
     }
 }
 
+// MARK: - Constants
+
 private let logFileName = "TomatoBar.log"
 private let lineEnd = "\n".data(using: .utf8)!
 
-internal let logger = TBLogger()
+// MARK: - Global Logger Instance
 
-class TBLogger {
+let logger = TBLogger()
+
+// MARK: - TBLogger
+
+final class TBLogger {
     private let logHandle: FileHandle?
-    private let encoder = JSONEncoder()
+    private let encoder: JSONEncoder
+
+    // MARK: - Initialization
 
     init() {
+        encoder = JSONEncoder()
         encoder.outputFormatting = .sortedKeys
         encoder.dateEncodingStrategy = .secondsSince1970
 
@@ -48,30 +64,30 @@ class TBLogger {
 
         if !fileManager.fileExists(atPath: logPath) {
             guard fileManager.createFile(atPath: logPath, contents: nil) else {
-                print("cannot create log file")
+                print("Cannot create log file")
                 logHandle = nil
                 return
             }
         }
 
         logHandle = FileHandle(forUpdatingAtPath: logPath)
-        guard logHandle != nil else {
-            print("cannot open log file")
-            return
+        if logHandle == nil {
+            print("Cannot open log file")
         }
     }
 
+    // MARK: - Public Methods
+
     func append(event: TBLogEvent) {
-        guard let logHandle = logHandle else {
-            return
-        }
+        guard let logHandle = logHandle else { return }
+
         do {
             let jsonData = try encoder.encode(event)
             try logHandle.seekToEnd()
             try logHandle.write(contentsOf: jsonData + lineEnd)
             try logHandle.synchronize()
         } catch {
-            print("cannot write to log file: \(error)")
+            print("Cannot write to log file: \(error)")
         }
     }
 }
