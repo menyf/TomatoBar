@@ -19,8 +19,12 @@
 "TBPopoverView.intervals.label" = "时长";
 "TBPopoverView.settings.label" = "设置";
 "TBPopoverView.sounds.label" = "声音";
+"TBPopoverView.tasks.label" = "任务";
 "TBPopoverView.about.label" = "关于";
 "TBPopoverView.quit.label" = "退出";
+"TasksView.newTask.placeholder" = "新任务...";
+"TasksView.empty.label" = "暂无任务";
+"TasksView.clearAll.label" = "清除全部";
 "TBTimer.onRestStart.title" = "时间到";
 "TBTimer.onRestStart.short.body" = "小憩时间到!";
 "TBTimer.onRestStart.long.body" = "长休息时间到!";

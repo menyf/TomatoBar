@@ -130,14 +130,130 @@ private struct SoundsView: View {
     }
 }
 
+private struct TaskRowView: View {
+    let task: TBTask
+    let onToggle: () -> Void
+    let onDelete: () -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Button(action: onToggle) {
+                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 16))
+                    .foregroundColor(task.isCompleted ? .accentColor : .secondary)
+            }
+            .buttonStyle(.plain)
+
+            Text(task.title)
+                .strikethrough(task.isCompleted)
+                .foregroundColor(task.isCompleted ? .secondary : .primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .lineLimit(1)
+
+            Button(action: onDelete) {
+                Image(systemName: "trash")
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+            .opacity(0.6)
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal, 6)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color.primary.opacity(0.05))
+        )
+    }
+}
+
+private struct TasksView: View {
+    @EnvironmentObject var taskManager: TBTaskManager
+    @State private var newTaskTitle = ""
+
+    var body: some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 6) {
+                TextField(NSLocalizedString("TasksView.newTask.placeholder",
+                                            comment: "New task placeholder"),
+                          text: $newTaskTitle,
+                          onCommit: {
+                              taskManager.addTask(newTaskTitle)
+                              newTaskTitle = ""
+                          })
+                    .textFieldStyle(.roundedBorder)
+
+                Button {
+                    taskManager.addTask(newTaskTitle)
+                    newTaskTitle = ""
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 18))
+                        .foregroundColor(.accentColor)
+                }
+                .buttonStyle(.plain)
+                .disabled(newTaskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+            .padding(.bottom, 4)
+
+            if taskManager.tasks.isEmpty {
+                VStack(spacing: 4) {
+                    Image(systemName: "checkmark.circle")
+                        .font(.system(size: 24))
+                        .foregroundColor(.secondary.opacity(0.5))
+                    Text(NSLocalizedString("TasksView.empty.label",
+                                           comment: "No tasks label"))
+                        .font(.system(size: 12))
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+            } else {
+                VStack(spacing: 4) {
+                    ForEach(taskManager.tasks) { task in
+                        TaskRowView(
+                            task: task,
+                            onToggle: { taskManager.toggleTask(task) },
+                            onDelete: { taskManager.removeTask(task) }
+                        )
+                    }
+                }
+
+                HStack {
+                    Text("\(taskManager.tasks.filter { $0.isCompleted }.count)/\(taskManager.tasks.count)")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+
+                    Spacer()
+
+                    Button {
+                        taskManager.removeAllTasks()
+                    } label: {
+                        Text(NSLocalizedString("TasksView.clearAll.label",
+                                               comment: "Clear all label"))
+                            .font(.system(size: 11))
+                            .foregroundColor(.red.opacity(0.8))
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.top, 2)
+            }
+
+            Spacer().frame(minHeight: 0)
+        }
+        .padding(4)
+    }
+}
+
 private enum ChildView {
-    case intervals, settings, sounds
+    case tasks, intervals, settings, sounds
 }
 
 struct TBPopoverView: View {
     @ObservedObject var timer = TBTimer()
+    @ObservedObject var taskManager = TBTaskManager()
     @State private var buttonHovered = false
-    @State private var activeChildView = ChildView.intervals
+    @State private var activeChildView = ChildView.tasks
 
     private var startLabel = NSLocalizedString("TBPopoverView.start.label", comment: "Start label")
     private var stopLabel = NSLocalizedString("TBPopoverView.stop.label", comment: "Stop label")
@@ -181,6 +297,8 @@ struct TBPopoverView: View {
             }
 
             Picker("", selection: $activeChildView) {
+                Text(NSLocalizedString("TBPopoverView.tasks.label",
+                                       comment: "Tasks label")).tag(ChildView.tasks)
                 Text(NSLocalizedString("TBPopoverView.intervals.label",
                                        comment: "Intervals label")).tag(ChildView.intervals)
                 Text(NSLocalizedString("TBPopoverView.settings.label",
@@ -200,6 +318,8 @@ struct TBPopoverView: View {
                     SettingsView().environmentObject(timer)
                 case .sounds:
                     SoundsView().environmentObject(timer.player)
+                case .tasks:
+                    TasksView().environmentObject(taskManager)
                 }
             }
 
