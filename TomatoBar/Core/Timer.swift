@@ -28,6 +28,7 @@ final class TBTimer: ObservableObject {
     @Published var timeLeftString: String = ""
     @Published var timer: DispatchSourceTimer?
     @Published var pendingBreak: Bool = false
+    @Published var isResting: Bool = false
 
     // MARK: - Internal Components
 
@@ -249,6 +250,7 @@ final class TBTimer: ObservableObject {
 
     private func onRestStart(context _: TBStateMachine.Context) {
         pendingBreak = false
+        isResting = true
 
         let isLongRest = consecutiveWorkIntervals >= workIntervalsInSet
         let body: String
@@ -288,6 +290,7 @@ final class TBTimer: ObservableObject {
 
     private func onIdleStart(context _: TBStateMachine.Context) {
         stopTimer()
+        isResting = false
         TBStatusItem.shared.setIcon(name: .idle)
         if !pendingBreak {
             consecutiveWorkIntervals = 0

@@ -94,7 +94,7 @@ struct TBPopoverView: View {
         .onHover { over in
             buttonHovered = over
         }
-        .buttonStyle(GlassPrimaryButtonStyle())
+        .buttonStyle(timer.isResting ? AnyButtonStyle(GlassGreenButtonStyle()) : AnyButtonStyle(GlassPrimaryButtonStyle()))
     }
 
     private var timerButtonTitle: String {
@@ -114,7 +114,7 @@ struct TBPopoverView: View {
                 .fontWeight(.medium)
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(GlassSecondaryButtonStyle())
+        .buttonStyle(GlassGreenButtonStyle())
     }
 
     // MARK: - Tab Navigation
@@ -185,6 +185,22 @@ struct TBPopoverView: View {
     }
 }
 
+// MARK: - AnyButtonStyle
+
+private struct AnyButtonStyle: ButtonStyle {
+    private let _makeBody: (Configuration) -> AnyView
+
+    init<S: ButtonStyle>(_ style: S) {
+        _makeBody = { configuration in
+            AnyView(style.makeBody(configuration: configuration))
+        }
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        _makeBody(configuration)
+    }
+}
+
 // MARK: - GlassPrimaryButtonStyle
 
 private struct GlassPrimaryButtonStyle: ButtonStyle {
@@ -221,6 +237,46 @@ private struct GlassPrimaryButtonContent: View {
             return Color.red.opacity(0.9)
         } else {
             return Color.red
+        }
+    }
+}
+
+// MARK: - GlassGreenButtonStyle
+
+private struct GlassGreenButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        GlassGreenButtonContent(configuration: configuration)
+    }
+}
+
+private struct GlassGreenButtonContent: View {
+    let configuration: ButtonStyleConfiguration
+    @State private var isHovered = false
+
+    var body: some View {
+        configuration.label
+            .foregroundStyle(.white)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+            .background(
+                Capsule(style: .continuous)
+                    .fill(backgroundColor)
+                    .shadow(color: .green.opacity(0.3), radius: isHovered ? 8 : 4, y: 2)
+            )
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
+            .onHover { hovering in
+                isHovered = hovering
+            }
+    }
+
+    private var backgroundColor: Color {
+        if configuration.isPressed {
+            return Color.green.opacity(0.8)
+        } else if isHovered {
+            return Color.green.opacity(0.9)
+        } else {
+            return Color.green
         }
     }
 }
