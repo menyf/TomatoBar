@@ -10,6 +10,7 @@ enum TBNotification {
     enum Category: String {
         case restStarted
         case restFinished
+        case workFinished
     }
 
     enum Action: String {
@@ -65,7 +66,13 @@ final class TBNotificationCenter: NSObject, UNUserNotificationCenterDelegate {
             intentIdentifiers: []
         )
 
-        center.setNotificationCategories([restStartedCategory, restFinishedCategory])
+        let workFinishedCategory = UNNotificationCategory(
+            identifier: TBNotification.Category.workFinished.rawValue,
+            actions: [],
+            intentIdentifiers: []
+        )
+
+        center.setNotificationCategories([restStartedCategory, restFinishedCategory, workFinishedCategory])
     }
 
     // MARK: - Public Methods

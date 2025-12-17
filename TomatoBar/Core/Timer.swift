@@ -187,6 +187,8 @@ final class TBTimer: ObservableObject {
 
         if timer != nil, showTimerInMenuBar {
             TBStatusItem.shared.setTitle(title: timeLeftString)
+        } else if pendingBreak {
+            TBStatusItem.shared.setTitle(title: NSLocalizedString("TBTimer.pendingBreak.menuBar", comment: "Menu bar text when break is pending"))
         } else {
             TBStatusItem.shared.setTitle(title: nil)
         }
@@ -258,6 +260,11 @@ final class TBTimer: ObservableObject {
             consecutiveWorkIntervals += 1
             pendingBreak = true
             player.playDing()
+            notificationCenter.send(
+                title: NSLocalizedString("TBTimer.onWorkFinish.title", comment: "Work finished title"),
+                body: NSLocalizedString("TBTimer.onWorkFinish.body", comment: "Work finished body"),
+                category: .workFinished
+            )
         }
     }
 

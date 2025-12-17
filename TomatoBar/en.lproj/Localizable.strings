@@ -31,3 +31,6 @@
 "TBTimer.onRestStart.skip.title" = "Skip";
 "TBTimer.onRestFinish.title" = "Break is over";
 "TBTimer.onRestFinish.body" = "Keep up the good work!";
+"TBTimer.onWorkFinish.title" = "Time's up";
+"TBTimer.onWorkFinish.body" = "Click the tomato to start your break!";
+"TBTimer.pendingBreak.menuBar" = "Break?";

@@ -31,3 +31,6 @@
 "TBTimer.onRestStart.skip.title" = "跳过";
 "TBTimer.onRestFinish.title" = "休息结束";
 "TBTimer.onRestFinish.body" = "继续努力!";
+"TBTimer.onWorkFinish.title" = "时间到";
+"TBTimer.onWorkFinish.body" = "点击番茄开始休息!";
+"TBTimer.pendingBreak.menuBar" = "休息?";
