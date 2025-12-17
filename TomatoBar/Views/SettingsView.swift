@@ -1,6 +1,7 @@
 // MARK: - SettingsView.swift
 // General application settings including keyboard shortcuts,
 // menu bar display options, and launch at login.
+// Updated for macOS 26 Tahoe with Liquid Glass design.
 
 import KeyboardShortcuts
 import LaunchAtLogin
@@ -17,52 +18,84 @@ struct SettingsView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack {
-            shortcutRecorder
-            stopAfterBreakToggle
-            showTimerToggle
-            launchAtLoginToggle
+        VStack(spacing: 8) {
+            shortcutRow
+
+            Divider()
+                .padding(.vertical, 4)
+
+            GlassToggleRow(
+                icon: "stop.fill",
+                iconColor: .orange,
+                label: NSLocalizedString("SettingsView.stopAfterBreak.label",
+                                         comment: "Stop after break label"),
+                isOn: $timer.stopAfterBreak
+            )
+
+            GlassToggleRow(
+                icon: "clock",
+                iconColor: .blue,
+                label: NSLocalizedString("SettingsView.showTimerInMenuBar.label",
+                                         comment: "Show timer in menu bar label"),
+                isOn: $timer.showTimerInMenuBar
+            )
+            .onChange(of: timer.showTimerInMenuBar) { _ in
+                timer.updateTimeLeft()
+            }
+
+            GlassToggleRow(
+                icon: "power",
+                iconColor: .green,
+                label: NSLocalizedString("SettingsView.launchAtLogin.label",
+                                         comment: "Launch at login label"),
+                isOn: $launchAtLogin.isEnabled
+            )
         }
-        .padding(4)
     }
 
     // MARK: - Subviews
 
-    private var shortcutRecorder: some View {
-        KeyboardShortcuts.Recorder(for: .startStopTimer) {
+    private var shortcutRow: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "keyboard")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.purple)
+                .frame(width: 16)
+
             Text(NSLocalizedString("SettingsView.shortcut.label",
                                    comment: "Shortcut label"))
+                .font(.system(size: 12))
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+            KeyboardShortcuts.Recorder(for: .startStopTimer)
+                .controlSize(.small)
         }
     }
+}
 
-    private var stopAfterBreakToggle: some View {
-        Toggle(isOn: $timer.stopAfterBreak) {
-            Text(NSLocalizedString("SettingsView.stopAfterBreak.label",
-                                   comment: "Stop after break label"))
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .toggleStyle(.switch)
-    }
+// MARK: - GlassToggleRow
 
-    private var showTimerToggle: some View {
-        Toggle(isOn: $timer.showTimerInMenuBar) {
-            Text(NSLocalizedString("SettingsView.showTimerInMenuBar.label",
-                                   comment: "Show timer in menu bar label"))
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .toggleStyle(.switch)
-        .onChange(of: timer.showTimerInMenuBar) { _ in
-            timer.updateTimeLeft()
-        }
-    }
+private struct GlassToggleRow: View {
+    let icon: String
+    let iconColor: Color
+    let label: String
+    @Binding var isOn: Bool
 
-    private var launchAtLoginToggle: some View {
-        Toggle(isOn: $launchAtLogin.isEnabled) {
-            Text(NSLocalizedString("SettingsView.launchAtLogin.label",
-                                   comment: "Launch at login label"))
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(iconColor)
+                .frame(width: 16)
+
+            Text(label)
+                .font(.system(size: 12))
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+            Toggle("", isOn: $isOn)
+                .toggleStyle(.switch)
+                .labelsHidden()
+                .controlSize(.small)
         }
-        .toggleStyle(.switch)
     }
 }

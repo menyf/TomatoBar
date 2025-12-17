@@ -1,6 +1,7 @@
 // MARK: - TasksView.swift
 // Task management view for tracking work items during pomodoro sessions.
 // Includes task list, add/remove functionality, and completion tracking.
+// Updated for macOS 26 Tahoe with Liquid Glass design.
 
 import SwiftUI
 
@@ -11,18 +12,26 @@ struct TaskRowView: View {
     let onToggle: () -> Void
     let onDelete: () -> Void
 
+    @State private var isHovered = false
+
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .center, spacing: 10) {
             toggleButton
             titleText
             deleteButton
+                .opacity(isHovered ? 1 : 0)
         }
-        .padding(.vertical, 4)
-        .padding(.horizontal, 6)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
         .background(
-            RoundedRectangle(cornerRadius: 6)
-                .fill(Color.primary.opacity(0.05))
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.primary.opacity(0.04))
         )
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.15)) {
+                isHovered = hovering
+            }
+        }
     }
 
     // MARK: - Subviews
@@ -30,8 +39,9 @@ struct TaskRowView: View {
     private var toggleButton: some View {
         Button(action: onToggle) {
             Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                .font(.system(size: 16))
-                .foregroundColor(task.isCompleted ? .accentColor : .secondary)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(task.isCompleted ? .red : .secondary)
+                .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
     }
@@ -93,12 +103,11 @@ struct TaskRowView: View {
 
     private var deleteButton: some View {
         Button(action: onDelete) {
-            Image(systemName: "trash")
+            Image(systemName: "xmark.circle.fill")
                 .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
         }
         .buttonStyle(.plain)
-        .opacity(0.6)
     }
 }
 
@@ -107,37 +116,44 @@ struct TaskRowView: View {
 struct TasksView: View {
     @EnvironmentObject var taskManager: TBTaskManager
     @State private var newTaskTitle = ""
+    @FocusState private var isInputFocused: Bool
 
     // MARK: - Body
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
             addTaskRow
             taskListContent
         }
-        .padding(4)
     }
 
     // MARK: - Subviews
 
     private var addTaskRow: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 8) {
             TextField(
                 NSLocalizedString("TasksView.newTask.placeholder", comment: "New task placeholder"),
                 text: $newTaskTitle,
                 onCommit: addTask
             )
-            .textFieldStyle(.roundedBorder)
+            .textFieldStyle(.plain)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.primary.opacity(0.04))
+            )
+            .focused($isInputFocused)
 
             Button(action: addTask) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 18))
-                    .foregroundColor(.accentColor)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(.red.opacity(0.9))
             }
             .buttonStyle(.plain)
             .disabled(newTaskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            .opacity(newTaskTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1.0)
         }
-        .padding(.bottom, 4)
     }
 
     @ViewBuilder
@@ -151,46 +167,67 @@ struct TasksView: View {
     }
 
     private var emptyStateView: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 6) {
             Image(systemName: "checkmark.circle")
-                .font(.system(size: 24))
-                .foregroundColor(.secondary.opacity(0.5))
+                .font(.system(size: 24, weight: .light))
+                .foregroundStyle(.tertiary)
             Text(NSLocalizedString("TasksView.empty.label", comment: "No tasks label"))
-                .font(.system(size: 12))
-                .foregroundColor(.secondary)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
+        .padding(.vertical, 16)
     }
 
     private var taskListView: some View {
-        VStack(spacing: 4) {
-            ForEach(taskManager.tasks) { task in
-                TaskRowView(
-                    task: task,
-                    onToggle: { taskManager.toggleTask(task) },
-                    onDelete: { taskManager.removeTask(task) }
-                )
+        ScrollView {
+            VStack(spacing: 6) {
+                ForEach(sortedTasks) { task in
+                    TaskRowView(
+                        task: task,
+                        onToggle: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                taskManager.toggleTask(task)
+                            }
+                        },
+                        onDelete: { taskManager.removeTask(task) }
+                    )
+                }
             }
         }
+        .frame(maxHeight: 200)
+    }
+
+    private var sortedTasks: [TBTask] {
+        taskManager.tasks.sorted { !$0.isCompleted && $1.isCompleted }
     }
 
     private var taskFooter: some View {
         HStack {
-            Text("\(taskManager.tasks.filter { $0.isCompleted }.count)/\(taskManager.tasks.count)")
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
+            HStack(spacing: 4) {
+                Text("\(taskManager.tasks.filter { $0.isCompleted }.count)")
+                    .foregroundStyle(.secondary)
+                Text("/")
+                    .foregroundStyle(.tertiary)
+                Text("\(taskManager.tasks.count)")
+                    .foregroundStyle(.secondary)
+            }
+            .font(.system(size: 12, weight: .medium, design: .rounded))
 
             Spacer()
 
             Button(action: taskManager.removeAllTasks) {
-                Text(NSLocalizedString("TasksView.clearAll.label", comment: "Clear all label"))
-                    .font(.system(size: 11))
-                    .foregroundColor(.red.opacity(0.8))
+                HStack(spacing: 4) {
+                    Image(systemName: "trash")
+                        .font(.system(size: 10))
+                    Text(NSLocalizedString("TasksView.clearAll.label", comment: "Clear all label"))
+                }
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.red.opacity(0.8))
             }
             .buttonStyle(.plain)
         }
-        .padding(.top, 2)
+        .padding(.top, 4)
     }
 
     // MARK: - Actions

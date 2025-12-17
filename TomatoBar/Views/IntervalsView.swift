@@ -1,6 +1,7 @@
 // MARK: - IntervalsView.swift
 // Settings view for configuring work/rest interval durations.
 // Allows users to customize pomodoro timing and auto-start behavior.
+// Updated for macOS 26 Tahoe with Liquid Glass design.
 
 import SwiftUI
 
@@ -14,72 +15,181 @@ struct IntervalsView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack {
-            workIntervalStepper
-            shortRestStepper
-            longRestStepper
-            workIntervalsInSetStepper
-            autoStartBreakToggle
-        }
-        .padding(4)
-    }
-
-    // MARK: - Subviews
-
-    private var workIntervalStepper: some View {
-        Stepper(value: $timer.workIntervalLength, in: 1...60) {
-            HStack {
-                Text(NSLocalizedString("IntervalsView.workIntervalLength.label",
-                                        comment: "Work interval label"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(String.localizedStringWithFormat(minStr, timer.workIntervalLength))
+        VStack(spacing: 8) {
+            GlassSettingsRow(
+                icon: "briefcase.fill",
+                iconColor: .red,
+                label: NSLocalizedString("IntervalsView.workIntervalLength.label",
+                                         comment: "Work interval label")
+            ) {
+                GlassStepper(value: $timer.workIntervalLength, range: 1...60) {
+                    Text(String.localizedStringWithFormat(minStr, timer.workIntervalLength))
+                        .monospacedDigit()
+                }
             }
-        }
-    }
 
-    private var shortRestStepper: some View {
-        Stepper(value: $timer.shortRestIntervalLength, in: 1...60) {
-            HStack {
-                Text(NSLocalizedString("IntervalsView.shortRestIntervalLength.label",
-                                        comment: "Short rest interval label"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(String.localizedStringWithFormat(minStr, timer.shortRestIntervalLength))
+            GlassSettingsRow(
+                icon: "cup.and.saucer.fill",
+                iconColor: .green,
+                label: NSLocalizedString("IntervalsView.shortRestIntervalLength.label",
+                                         comment: "Short rest interval label")
+            ) {
+                GlassStepper(value: $timer.shortRestIntervalLength, range: 1...60) {
+                    Text(String.localizedStringWithFormat(minStr, timer.shortRestIntervalLength))
+                        .monospacedDigit()
+                }
             }
-        }
-    }
 
-    private var longRestStepper: some View {
-        Stepper(value: $timer.longRestIntervalLength, in: 1...60) {
-            HStack {
-                Text(NSLocalizedString("IntervalsView.longRestIntervalLength.label",
-                                        comment: "Long rest interval label"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(String.localizedStringWithFormat(minStr, timer.longRestIntervalLength))
+            GlassSettingsRow(
+                icon: "moon.fill",
+                iconColor: .blue,
+                label: NSLocalizedString("IntervalsView.longRestIntervalLength.label",
+                                         comment: "Long rest interval label"),
+                help: NSLocalizedString("IntervalsView.longRestIntervalLength.help",
+                                        comment: "Long rest interval hint")
+            ) {
+                GlassStepper(value: $timer.longRestIntervalLength, range: 1...60) {
+                    Text(String.localizedStringWithFormat(minStr, timer.longRestIntervalLength))
+                        .monospacedDigit()
+                }
             }
-        }
-        .help(NSLocalizedString("IntervalsView.longRestIntervalLength.help",
-                                comment: "Long rest interval hint"))
-    }
 
-    private var workIntervalsInSetStepper: some View {
-        Stepper(value: $timer.workIntervalsInSet, in: 1...10) {
-            HStack {
-                Text(NSLocalizedString("IntervalsView.workIntervalsInSet.label",
-                                        comment: "Work intervals in a set label"))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text("\(timer.workIntervalsInSet)")
+            GlassSettingsRow(
+                icon: "arrow.trianglehead.2.clockwise.rotate.90",
+                iconColor: .orange,
+                label: NSLocalizedString("IntervalsView.workIntervalsInSet.label",
+                                         comment: "Work intervals in a set label"),
+                help: NSLocalizedString("IntervalsView.workIntervalsInSet.help",
+                                        comment: "Work intervals in set hint")
+            ) {
+                GlassStepper(value: $timer.workIntervalsInSet, range: 1...10) {
+                    Text("\(timer.workIntervalsInSet)")
+                        .monospacedDigit()
+                }
             }
-        }
-        .help(NSLocalizedString("IntervalsView.workIntervalsInSet.help",
-                                comment: "Work intervals in set hint"))
-    }
 
-    private var autoStartBreakToggle: some View {
-        Toggle(isOn: $timer.autoStartBreak) {
-            Text(NSLocalizedString("IntervalsView.autoStartBreak.label",
-                                   comment: "Auto start break label"))
-                .frame(maxWidth: .infinity, alignment: .leading)
+            Divider()
+                .padding(.vertical, 4)
+
+            GlassToggleRow(
+                icon: "play.fill",
+                iconColor: .purple,
+                label: NSLocalizedString("IntervalsView.autoStartBreak.label",
+                                         comment: "Auto start break label"),
+                isOn: $timer.autoStartBreak
+            )
         }
-        .toggleStyle(.switch)
+    }
+}
+
+// MARK: - GlassSettingsRow
+
+private struct GlassSettingsRow<Content: View>: View {
+    let icon: String
+    let iconColor: Color
+    let label: String
+    var help: String? = nil
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(iconColor)
+                .frame(width: 16)
+
+            Text(label)
+                .font(.system(size: 12))
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+
+            Spacer(minLength: 4)
+
+            content()
+                .fixedSize()
+        }
+        .help(help ?? "")
+    }
+}
+
+// MARK: - GlassStepper
+
+private struct GlassStepper<Label: View>: View {
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    @ViewBuilder let label: () -> Label
+
+    var body: some View {
+        HStack(spacing: 4) {
+            label()
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundStyle(.secondary)
+                .frame(minWidth: 44, alignment: .trailing)
+
+            HStack(spacing: 0) {
+                Button {
+                    if value > range.lowerBound {
+                        value -= 1
+                    }
+                } label: {
+                    Image(systemName: "minus")
+                        .font(.system(size: 9, weight: .bold))
+                        .frame(width: 28, height: 28)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.borderless)
+                .disabled(value <= range.lowerBound)
+                .opacity(value <= range.lowerBound ? 0.3 : 1.0)
+
+                Divider()
+                    .frame(height: 12)
+
+                Button {
+                    if value < range.upperBound {
+                        value += 1
+                    }
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 9, weight: .bold))
+                        .frame(width: 28, height: 28)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.borderless)
+                .disabled(value >= range.upperBound)
+                .opacity(value >= range.upperBound ? 0.3 : 1.0)
+            }
+            .background(
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .fill(Color.primary.opacity(0.06))
+            )
+        }
+    }
+}
+
+// MARK: - GlassToggleRow
+
+private struct GlassToggleRow: View {
+    let icon: String
+    let iconColor: Color
+    let label: String
+    @Binding var isOn: Bool
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(iconColor)
+                .frame(width: 16)
+
+            Text(label)
+                .font(.system(size: 12))
+
+            Spacer()
+
+            Toggle("", isOn: $isOn)
+                .toggleStyle(.switch)
+                .labelsHidden()
+                .controlSize(.small)
+        }
     }
 }

@@ -55,6 +55,26 @@ When `autoStartBreak` is disabled, work ends in `idle` with `pendingBreak=true`,
 - **KeyboardShortcuts** - Global hotkey (Cmd+Shift+A)
 - **LaunchAtLogin** - Login item
 
+## UI Design
+
+Updated for macOS 26 Tahoe compatibility with modern styling:
+
+### Design System
+
+- **Popover width**: 320pt
+- **Font size**: 12pt for labels and icons (consistent across all tabs)
+- **Icon frame**: 16pt width
+- **Spacing**: 8pt for VStack/HStack
+- **Backgrounds**: `Color.primary.opacity()` (no materials to avoid flickering)
+- **Button styles**: `.plain` with `.contentShape(Rectangle())` for reliable click handling
+
+### Tab Views
+
+- **Tasks**: Sortable list (uncompleted first), animated reordering, scrollable with max height
+- **Intervals**: Stepper controls with +/- buttons
+- **Settings**: Toggle switches and keyboard shortcut recorder
+- **Sounds**: Inline sliders with volume indicators
+
 ## Integration
 
 - **URL Scheme**: `open tomatobar://startStop`

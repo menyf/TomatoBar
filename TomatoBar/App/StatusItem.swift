@@ -1,13 +1,14 @@
 // MARK: - StatusItem.swift
 // Menu bar status item controller.
 // Manages the popover display, icon updates, and menu bar title.
+// Updated for macOS 26 Tahoe with transparent menu bar support.
 
 import SwiftUI
 
 // MARK: - Constants
 
-private let digitFont = NSFont.monospacedDigitSystemFont(ofSize: 0, weight: .regular)
-private let popoverWidth: CGFloat = 240
+private let digitFont = NSFont.monospacedDigitSystemFont(ofSize: 0, weight: .medium)
+private let popoverWidth: CGFloat = 320
 
 // MARK: - TBStatusItem
 
@@ -54,11 +55,16 @@ class TBStatusItem: NSObject, NSApplicationDelegate {
     }
 
     func setIcon(name: NSImage.Name) {
-        statusBarItem?.button?.image = NSImage(named: name)
+        if let image = NSImage(named: name) {
+            // Ensure template rendering for transparent menu bar support in macOS 26
+            image.isTemplate = true
+            statusBarItem?.button?.image = image
+        }
     }
 
     func showPopover(_: AnyObject?) {
         guard let button = statusBarItem?.button else { return }
+        NSApp.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
         popover.contentViewController?.view.window?.makeKey()
     }
