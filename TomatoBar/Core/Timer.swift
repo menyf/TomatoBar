@@ -17,6 +17,7 @@ final class TBTimer: ObservableObject {
     @AppStorage("stopAfterBreak") var stopAfterBreak = false
     @AppStorage("autoStartBreak") var autoStartBreak = true
     @AppStorage("showTimerInMenuBar") var showTimerInMenuBar = true
+    @AppStorage("debugMode") var debugMode = false
     @AppStorage("workIntervalLength") var workIntervalLength = 25
     @AppStorage("shortRestIntervalLength") var shortRestIntervalLength = 5
     @AppStorage("longRestIntervalLength") var longRestIntervalLength = 15
@@ -247,7 +248,8 @@ final class TBTimer: ObservableObject {
         TBStatusItem.shared.setIcon(name: .work)
         player.playWindup()
         player.startTicking()
-        startTimer(seconds: workIntervalLength * 60)
+        let seconds = debugMode ? 5 : workIntervalLength * 60
+        startTimer(seconds: seconds)
     }
 
     private func onWorkFinish(context _: TBStateMachine.Context) {
@@ -297,7 +299,8 @@ final class TBTimer: ObservableObject {
             category: .restStarted
         )
         TBStatusItem.shared.setIcon(name: iconName)
-        startTimer(seconds: length * 60)
+        let seconds = debugMode ? 5 : length * 60
+        startTimer(seconds: seconds)
     }
 
     private func onRestFinish(context ctx: TBStateMachine.Context) {

@@ -50,6 +50,17 @@ struct SettingsView: View {
                                          comment: "Launch at login label"),
                 isOn: $launchAtLogin.isEnabled
             )
+
+            Divider()
+                .padding(.vertical, 4)
+
+            GlassToggleRow(
+                icon: "ant",
+                iconColor: .red,
+                label: NSLocalizedString("SettingsView.debugMode.label",
+                                         comment: "Debug mode label"),
+                isOn: $timer.debugMode
+            )
         }
     }
 
