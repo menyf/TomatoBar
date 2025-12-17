@@ -14,8 +14,6 @@ final class TBTimer: ObservableObject {
 
     // MARK: - User Preferences
 
-    @AppStorage("stopAfterBreak") var stopAfterBreak = false
-    @AppStorage("autoStartBreak") var autoStartBreak = true
     @AppStorage("showTimerInMenuBar") var showTimerInMenuBar = true
     @AppStorage("debugMode") var debugMode = false
     @AppStorage("workIntervalLength") var workIntervalLength = 25
@@ -60,22 +58,13 @@ final class TBTimer: ObservableObject {
         /*
          * State diagram:
          *
-         *                 start/stop
-         *       +--------------+-------------+
-         *       |              |             |
-         *       |  start/stop  |  timerFired |
-         *       V    |         |    |        |
-         * +--------+ |  +--------+  | +--------+
-         * | idle   |--->| work   |--->| rest   |
-         * +--------+    +--------+    +--------+
-         *   A                  A        |    |
-         *   |                  |        |    |
-         *   |                  +--------+    |
-         *   |  timerFired (!stopAfterBreak)  |
-         *   |             skipRest           |
-         *   |                                |
-         *   +--------------------------------+
-         *      timerFired (stopAfterBreak)
+         *       startStop        timerFired       startBreak       timerFired
+         * idle ---------> work -----------> idle -----------> rest -----------> idle
+         *   A               |                 A                 |
+         *   |   startStop   |                 |    startStop    |
+         *   +---------------+                 +-----------------+
+         *                                     |    skipRest     |
+         *                                     +-----------------+
          */
 
         // Basic transitions
@@ -85,33 +74,22 @@ final class TBTimer: ObservableObject {
             .rest => .idle
         ])
 
-        // Timer fired transitions (conditional)
-        stateMachine.addRoutes(event: .timerFired, transitions: [.work => .rest]) { _ in
-            self.autoStartBreak
-        }
-        stateMachine.addRoutes(event: .timerFired, transitions: [.work => .idle]) { _ in
-            !self.autoStartBreak
-        }
-        stateMachine.addRoutes(event: .timerFired, transitions: [.rest => .idle]) { _ in
-            self.stopAfterBreak
-        }
-        stateMachine.addRoutes(event: .timerFired, transitions: [.rest => .work]) { _ in
-            !self.stopAfterBreak
-        }
+        // Timer fired transitions - always go to idle
+        stateMachine.addRoutes(event: .timerFired, transitions: [
+            .work => .idle,
+            .rest => .idle
+        ])
 
         // Manual transitions
-        stateMachine.addRoutes(event: .skipRest, transitions: [.rest => .work])
+        stateMachine.addRoutes(event: .skipRest, transitions: [.rest => .idle])
         stateMachine.addRoutes(event: .startBreak, transitions: [.idle => .rest])
 
         // State handlers
-        // Note: "Finish" handlers are called when time interval ended
-        //       "End" handlers are called when time interval ended or was cancelled
         stateMachine.addAnyHandler(.any => .work, handler: onWorkStart)
-        stateMachine.addAnyHandler(.work => .rest, order: 0, handler: onWorkFinish)
-        stateMachine.addAnyHandler(.work => .idle, order: 0, handler: onWorkFinishToIdle)
+        stateMachine.addAnyHandler(.work => .idle, order: 0, handler: onWorkFinish)
         stateMachine.addAnyHandler(.work => .any, order: 1, handler: onWorkEnd)
         stateMachine.addAnyHandler(.any => .rest, handler: onRestStart)
-        stateMachine.addAnyHandler(.rest => .work, handler: onRestFinish)
+        stateMachine.addAnyHandler(.rest => .idle, order: 0, handler: onRestFinish)
         stateMachine.addAnyHandler(.any => .idle, handler: onIdleStart)
 
         // Logging handler
@@ -252,12 +230,7 @@ final class TBTimer: ObservableObject {
         startTimer(seconds: seconds)
     }
 
-    private func onWorkFinish(context _: TBStateMachine.Context) {
-        consecutiveWorkIntervals += 1
-        player.playDing()
-    }
-
-    private func onWorkFinishToIdle(context ctx: TBStateMachine.Context) {
+    private func onWorkFinish(context ctx: TBStateMachine.Context) {
         if ctx.event == .timerFired {
             consecutiveWorkIntervals += 1
             pendingBreak = true

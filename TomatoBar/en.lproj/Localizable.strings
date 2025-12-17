@@ -5,9 +5,7 @@
 "IntervalsView.longRestIntervalLength.help" = "Duration of the lengthy break, taken after finishing work interval set";
 "IntervalsView.workIntervalsInSet.label" = "Work intervals in a set";
 "IntervalsView.workIntervalsInSet.help" = "Number of working intervals in the set, after which a lengthy break taken";
-"IntervalsView.autoStartBreak.label" = "Auto start break";
 "SettingsView.shortcut.label" = "Shortcut";
-"SettingsView.stopAfterBreak.label" = "Stop after break";
 "SettingsView.showTimerInMenuBar.label" = "Show timer in menu bar";
 "SettingsView.launchAtLogin.label" = "Launch at login";
 "SettingsView.debugMode.label" = "Debug mode (5s intervals)";

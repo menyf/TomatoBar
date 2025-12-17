@@ -25,14 +25,6 @@ struct SettingsView: View {
                 .padding(.vertical, 4)
 
             GlassToggleRow(
-                icon: "stop.fill",
-                iconColor: .orange,
-                label: NSLocalizedString("SettingsView.stopAfterBreak.label",
-                                         comment: "Stop after break label"),
-                isOn: $timer.stopAfterBreak
-            )
-
-            GlassToggleRow(
                 icon: "clock",
                 iconColor: .blue,
                 label: NSLocalizedString("SettingsView.showTimerInMenuBar.label",

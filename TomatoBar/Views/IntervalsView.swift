@@ -67,17 +67,6 @@ struct IntervalsView: View {
                         .monospacedDigit()
                 }
             }
-
-            Divider()
-                .padding(.vertical, 4)
-
-            GlassToggleRow(
-                icon: "play.fill",
-                iconColor: .purple,
-                label: NSLocalizedString("IntervalsView.autoStartBreak.label",
-                                         comment: "Auto start break label"),
-                isOn: $timer.autoStartBreak
-            )
         }
     }
 }
@@ -162,34 +151,6 @@ private struct GlassStepper<Label: View>: View {
                 RoundedRectangle(cornerRadius: 5, style: .continuous)
                     .fill(Color.primary.opacity(0.06))
             )
-        }
-    }
-}
-
-// MARK: - GlassToggleRow
-
-private struct GlassToggleRow: View {
-    let icon: String
-    let iconColor: Color
-    let label: String
-    @Binding var isOn: Bool
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(iconColor)
-                .frame(width: 16)
-
-            Text(label)
-                .font(.system(size: 12))
-
-            Spacer()
-
-            Toggle("", isOn: $isOn)
-                .toggleStyle(.switch)
-                .labelsHidden()
-                .controlSize(.small)
         }
     }
 }
