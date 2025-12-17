@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build & Run
 
-This is a macOS SwiftUI app. Open in Xcode and build/run with Cmd+R:
+macOS SwiftUI app. Open in Xcode and build/run with Cmd+R:
 ```bash
 open TomatoBar.xcodeproj
 ```
@@ -21,38 +21,16 @@ xcodebuild archive -project TomatoBar.xcodeproj -scheme TomatoBar -configuration
 
 ## Architecture
 
-TomatoBar is a Pomodoro timer living in the macOS menu bar (~700 lines of Swift).
+TomatoBar is a Pomodoro timer for the macOS menu bar. Fork of [ivoronin/TomatoBar](https://github.com/ivoronin/TomatoBar) with task tracking and manual break start features.
 
-### Directory Structure
+### Structure
 
-```
-TomatoBar/
-├── App/                    # Application entry and menu bar
-│   ├── App.swift           # SwiftUI @main entry point
-│   └── StatusItem.swift    # Menu bar status item controller
-├── Core/                   # Business logic
-│   ├── State.swift         # State machine types (TimerState/TimerEvent)
-│   ├── Timer.swift         # Timer orchestration, state transitions
-│   └── Task.swift          # Task model and persistence manager
-├── Views/                  # SwiftUI views
-│   ├── PopoverView.swift   # Main popover UI container
-│   ├── IntervalsView.swift # Work/rest interval settings
-│   ├── SettingsView.swift  # General settings (shortcuts, etc.)
-│   ├── SoundsView.swift    # Sound volume controls
-│   └── TasksView.swift     # Task list UI
-├── Services/               # System integrations
-│   ├── Logger.swift        # JSON event logger
-│   ├── Player.swift        # Audio playback (windup, ding, ticking)
-│   └── Notifications.swift # macOS notification handling
-├── Assets.xcassets/        # Images and audio assets
-├── en.lproj/               # English localization
-├── zh-Hans.lproj/          # Simplified Chinese localization
-└── Info.plist
-```
+- `App/` - Entry point and menu bar integration
+- `Core/` - State machine (SwiftState), timer logic, task model
+- `Views/` - SwiftUI views (popover, settings tabs)
+- `Services/` - Audio, notifications, JSON logger
 
-### State Machine (Core Pattern)
-
-The app uses SwiftState for a finite state machine with three states:
+### State Machine
 
 ```
 idle <--startStop--> work --timerFired--> rest --timerFired--> idle/work
@@ -60,55 +38,33 @@ idle <--startStop--> work --timerFired--> rest --timerFired--> idle/work
                        +---skipRest--------+
 ```
 
-- **idle**: Timer stopped
-- **work**: Active work session (default 25 min)
-- **rest**: Break period (short: 5 min, long: 15 min after 4 work intervals)
+States: `idle`, `work`, `rest`. Defined in `Core/State.swift`, transitions in `Core/Timer.swift`.
 
-States defined in `Core/State.swift`, transitions handled in `Core/Timer.swift`.
-
-### Key Components
-
-| File | Purpose |
-|------|---------|
-| `App/App.swift` | SwiftUI entry point, initializes status bar |
-| `App/StatusItem.swift` | NSApplicationDelegate for menu bar integration |
-| `Core/Timer.swift` | State machine orchestration, DispatchSourceTimer, URL scheme |
-| `Core/State.swift` | TimerState and TimerEvent type definitions |
-| `Core/Task.swift` | Task model with UserDefaults persistence |
-| `Views/PopoverView.swift` | Main UI with tab navigation |
-| `Views/IntervalsView.swift` | Work/rest duration steppers |
-| `Views/SettingsView.swift` | Shortcuts, launch at login settings |
-| `Views/SoundsView.swift` | Volume sliders for each sound |
-| `Views/TasksView.swift` | Task list with add/complete/delete |
-| `Services/Player.swift` | AVAudioPlayer wrapper for sounds |
-| `Services/Notifications.swift` | UNUserNotificationCenter with "Skip Break" action |
-| `Services/Logger.swift` | JSON event logger to caches directory |
+When `autoStartBreak` is disabled, work ends in `idle` with `pendingBreak=true`, waiting for manual `startBreak` event.
 
 ### Data Flow
 
-1. UI binds to `TBTimer` (ObservableObject) via `@EnvironmentObject`
-2. User preferences stored via `@AppStorage` (auto-synced to UserDefaults)
-3. State transitions trigger handlers that update icon, play sounds, send notifications
-4. Menu bar icon/title updated through `TBStatusItem.shared`
-5. Tasks managed by `TBTaskManager` with JSON persistence to UserDefaults
+- UI binds to `TBTimer` (ObservableObject) via `@EnvironmentObject`
+- Preferences via `@AppStorage` (UserDefaults)
+- Menu bar icon/title via `TBStatusItem.shared`
+- Tasks via `TBTaskManager` (JSON in UserDefaults)
 
-### External Dependencies (SPM)
+### Dependencies (SPM)
 
 - **SwiftState** - State machine
-- **KeyboardShortcuts** - Global hotkey (default: Cmd+Shift+A)
-- **LaunchAtLogin** - Login item support
+- **KeyboardShortcuts** - Global hotkey (Cmd+Shift+A)
+- **LaunchAtLogin** - Login item
 
-## Integration Points
+## Integration
 
-- **URL Scheme**: `open tomatobar://startStop` toggles timer externally
-- **Event Log**: JSON at `~/Library/Containers/com.github.ivoronin.TomatoBar/Data/Library/Caches/TomatoBar.log`
+- **URL Scheme**: `open tomatobar://startStop`
+- **Event Log**: `~/Library/Containers/com.github.ivoronin.TomatoBar/Data/Library/Caches/TomatoBar.log`
 
 ## Localization
 
-Supported: English (en), Simplified Chinese (zh-Hans). Strings in `Localizable.strings`.
+English (en), Simplified Chinese (zh-Hans). Strings in `*.lproj/Localizable.strings`.
 
 ## Constraints
 
-- Deployment target: macOS 11.0 (Big Sur)+
-- Fully sandboxed with no entitlements
-- No network access
+- macOS 11.0+ (Big Sur)
+- Fully sandboxed, no entitlements, no network access
