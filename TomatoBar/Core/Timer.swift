@@ -281,6 +281,7 @@ final class TBTimer: ObservableObject {
     private func onRestFinish(context ctx: TBStateMachine.Context) {
         guard ctx.event != .skipRest else { return }
 
+        player.playDing()
         notificationCenter.send(
             title: NSLocalizedString("TBTimer.onRestFinish.title", comment: "Break is over title"),
             body: NSLocalizedString("TBTimer.onRestFinish.body", comment: "Break is over body"),
