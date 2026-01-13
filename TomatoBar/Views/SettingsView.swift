@@ -18,7 +18,7 @@ struct SettingsView: View {
     // MARK: - Body
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             shortcutRow
 
             Divider()
@@ -31,9 +31,17 @@ struct SettingsView: View {
                                          comment: "Show timer in menu bar label"),
                 isOn: $timer.showTimerInMenuBar
             )
-            .onChange(of: timer.showTimerInMenuBar) { _ in
+            .onChange(of: timer.showTimerInMenuBar) {
                 timer.updateTimeLeft()
             }
+
+            GlassToggleRow(
+                icon: "cup.and.saucer.fill",
+                iconColor: .orange,
+                label: NSLocalizedString("SettingsView.preventSleep.label",
+                                         comment: "Prevent sleep label"),
+                isOn: $timer.preventSleep
+            )
 
             GlassToggleRow(
                 icon: "power",

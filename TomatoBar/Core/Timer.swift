@@ -15,6 +15,15 @@ final class TBTimer: ObservableObject {
     // MARK: - User Preferences
 
     @AppStorage("showTimerInMenuBar") var showTimerInMenuBar = true
+    @AppStorage("preventSleep") var preventSleep = false {
+        didSet {
+            if preventSleep {
+                TBSleepManager.shared.preventSleep()
+            } else {
+                TBSleepManager.shared.allowSleep()
+            }
+        }
+    }
     @AppStorage("debugMode") var debugMode = false
     @AppStorage("workIntervalLength") var workIntervalLength = 25
     @AppStorage("shortRestIntervalLength") var shortRestIntervalLength = 5
@@ -51,6 +60,11 @@ final class TBTimer: ObservableObject {
         configureKeyboardShortcut()
         configureNotificationHandler()
         configureURLScheme()
+
+        // Enable sleep prevention on startup if setting is on
+        if preventSleep {
+            TBSleepManager.shared.preventSleep()
+        }
     }
 
     // MARK: - State Machine Configuration
@@ -163,7 +177,11 @@ final class TBTimer: ObservableObject {
     }
 
     func updateTimeLeft() {
-        timeLeftString = timerFormatter.string(from: Date(), to: finishTime) ?? ""
+        if let finishTime = finishTime {
+            timeLeftString = timerFormatter.string(from: Date(), to: finishTime) ?? ""
+        } else {
+            timeLeftString = ""
+        }
 
         if timer != nil, showTimerInMenuBar {
             TBStatusItem.shared.setTitle(title: timeLeftString)

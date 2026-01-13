@@ -25,6 +25,7 @@
 		CF4000010000000000000001 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4000020000000000000001 /* Logger.swift */; };
 		CF4000030000000000000001 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4000040000000000000001 /* Player.swift */; };
 		CF4000050000000000000001 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4000060000000000000001 /* Notifications.swift */; };
+		CF4000070000000000000001 /* SleepManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF4000080000000000000001 /* SleepManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		CF4000020000000000000001 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		CF4000040000000000000001 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		CF4000060000000000000001 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		CF4000080000000000000001 /* SleepManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 				CF4000020000000000000001 /* Logger.swift */,
 				CF4000040000000000000001 /* Player.swift */,
 				CF4000060000000000000001 /* Notifications.swift */,
+				CF4000080000000000000001 /* SleepManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -258,6 +261,7 @@
 				CF4000010000000000000001 /* Logger.swift in Sources */,
 				CF4000030000000000000001 /* Player.swift in Sources */,
 				CF4000050000000000000001 /* Notifications.swift in Sources */,
+				CF4000070000000000000001 /* SleepManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

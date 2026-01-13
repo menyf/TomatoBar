@@ -7,6 +7,7 @@
 "IntervalsView.workIntervalsInSet.help" = "Number of working intervals in the set, after which a lengthy break taken";
 "SettingsView.shortcut.label" = "Shortcut";
 "SettingsView.showTimerInMenuBar.label" = "Show timer in menu bar";
+"SettingsView.preventSleep.label" = "Prevent sleep";
 "SettingsView.launchAtLogin.label" = "Launch at login";
 "SettingsView.debugMode.label" = "Debug mode (5s intervals)";
 "SoundsView.isWindupEnabled.label" = "Windup";

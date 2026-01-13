@@ -7,6 +7,7 @@
 "IntervalsView.workIntervalsInSet.help" = "每组在长时间休息后的工作次数";
 "SettingsView.shortcut.label" = "快捷键";
 "SettingsView.showTimerInMenuBar.label" = "在菜单栏中显示计时器";
+"SettingsView.preventSleep.label" = "阻止睡眠";
 "SettingsView.launchAtLogin.label" = "登录时启动";
 "SettingsView.debugMode.label" = "调试模式 (5秒间隔)";
 "SoundsView.isWindupEnabled.label" = "发条声";
