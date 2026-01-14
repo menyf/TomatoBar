@@ -1,6 +1,6 @@
 // MARK: - SleepManager.swift
 // Sleep prevention service using IOKit.
-// Prevents Mac from sleeping when timer is active.
+// Prevents Mac from sleeping when enabled.
 
 import IOKit.pwr_mgt
 
@@ -14,7 +14,8 @@ final class TBSleepManager {
 
     // MARK: - Private State
 
-    private var assertionID: IOPMAssertionID = 0
+    private var displayAssertionID: IOPMAssertionID = 0
+    private var systemAssertionID: IOPMAssertionID = 0
     private var isPreventingSleep = false
 
     // MARK: - Initialization
@@ -23,19 +24,29 @@ final class TBSleepManager {
 
     // MARK: - Public Methods
 
-    /// Prevents the Mac from sleeping (similar to caffeinate).
+    /// Prevents the Mac from sleeping (similar to caffeinate -d -i).
     func preventSleep() {
         guard !isPreventingSleep else { return }
 
-        let reason = "TomatoBar timer is running" as CFString
-        let result = IOPMAssertionCreateWithName(
-            kIOPMAssertionTypePreventUserIdleSystemSleep as CFString,
+        let reason = "TomatoBar is keeping your Mac awake" as CFString
+
+        // Prevent display from sleeping (like caffeinate -d)
+        let displayResult = IOPMAssertionCreateWithName(
+            kIOPMAssertionTypeNoDisplaySleep as CFString,
             IOPMAssertionLevel(kIOPMAssertionLevelOn),
             reason,
-            &assertionID
+            &displayAssertionID
         )
 
-        if result == kIOReturnSuccess {
+        // Prevent system from idle sleeping (like caffeinate -i)
+        let systemResult = IOPMAssertionCreateWithName(
+            kIOPMAssertionTypeNoIdleSleep as CFString,
+            IOPMAssertionLevel(kIOPMAssertionLevelOn),
+            reason,
+            &systemAssertionID
+        )
+
+        if displayResult == kIOReturnSuccess || systemResult == kIOReturnSuccess {
             isPreventingSleep = true
         }
     }
@@ -44,8 +55,16 @@ final class TBSleepManager {
     func allowSleep() {
         guard isPreventingSleep else { return }
 
-        IOPMAssertionRelease(assertionID)
+        if displayAssertionID != 0 {
+            IOPMAssertionRelease(displayAssertionID)
+            displayAssertionID = 0
+        }
+
+        if systemAssertionID != 0 {
+            IOPMAssertionRelease(systemAssertionID)
+            systemAssertionID = 0
+        }
+
         isPreventingSleep = false
-        assertionID = 0
     }
 }
